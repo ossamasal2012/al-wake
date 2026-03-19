@@ -63,6 +63,13 @@ jobs:
       - name: Sync web files
         run: npx cap sync android
 
+      - name: Set App Icon
+        run: |
+          mkdir -p assets
+          curl -L "https://i.ibb.co/S4MCGyyH/Untitled-2.png" -o assets/icon.png
+          npm install -g @capacitor/assets
+          npx capacitor-assets generate --android
+
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
