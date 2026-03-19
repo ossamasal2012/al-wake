@@ -27,8 +27,9 @@ jobs:
       - name: Create project files
         run: |
           mkdir -p src
+          mv index.html src/index.html
 
-          cat > package.json << 'PKGJSON'
+          cat > package.json << 'EOF'
           {
             "name": "al-wake",
             "version": "1.0.0",
@@ -40,9 +41,9 @@ jobs:
               "@capacitor/cli": "5.7.0"
             }
           }
-          PKGJSON
+          EOF
 
-          cat > capacitor.config.json << 'CAPJSON'
+          cat > capacitor.config.json << 'EOF'
           {
             "appId": "com.alwake.alarm",
             "appName": "Al-Wake",
@@ -51,25 +52,7 @@ jobs:
               "backgroundColor": "#0b0f1a"
             }
           }
-          CAPJSON
-
-          cat > src/index.html << 'HTMLEOF'
-          <!DOCTYPE html>
-          <html lang="ar" dir="rtl">
-          <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Al-Wake</title>
-          </head>
-          <body>
-          <h1>Al-Wake</h1>
-          <script>
-          let alarms = [];
-          try { alarms = JSON.parse(localStorage.getItem('alwake_v1') || '[]'); } catch(e){}
-          </script>
-          </body>
-          </html>
-          HTMLEOF
+          EOF
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
