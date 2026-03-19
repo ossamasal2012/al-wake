@@ -11,43 +11,68 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Setup Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '18'
+
+      - name: Create package.json
+        run: |
+          cat > package.json << 'EOF'
+          {
+            "name": "al-wake",
+            "version": "1.0.0",
+            "dependencies": {
+              "@capacitor/android": "5.7.0",
+              "@capacitor/core": "5.7.0"
+            },
+            "devDependencies": {
+              "@capacitor/cli": "5.7.0"
+            }
+          }
+          EOF
+
+      - name: Create capacitor.config.json
+        run: |
+          cat > capacitor.config.json << 'EOF'
+          {
+            "appId": "com.alwake.alarm",
+            "appName": "Al-Wake",
+            "webDir": "src",
+            "android": {
+              "backgroundColor": "#0b0f1a"
+            }
+          }
+          EOF
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Install Capacitor CLI
-        run: npm install -g @capacitor/cli
+        run: npm install --legacy-peer-deps
 
       - name: Add Android platform
         run: npx cap add android
 
-      - name: Sync web files to Android
+      - name: Sync web files
         run: npx cap sync android
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
-      - name: Build Debug APK
+      - name: Build APK
         run: |
           cd android
           ./gradlew assembleDebug --no-daemon
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
         with:
-          name: AlWake-debug-APK
+          name: AlWake-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
