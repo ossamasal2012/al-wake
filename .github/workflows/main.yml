@@ -27,7 +27,8 @@ jobs:
       - name: Create project files
         run: |
           mkdir -p src
-          mv index.html src/index.html
+          # هذا الأمر ينقل كل ملفات المشروع (صور، أصوات، تنسيقات) إلى مجلد البناء
+          cp -v *.* src/ 2>/dev/null || true
 
           cat > package.json << 'EOF'
           {
